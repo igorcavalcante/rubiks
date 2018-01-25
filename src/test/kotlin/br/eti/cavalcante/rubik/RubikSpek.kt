@@ -14,34 +14,7 @@ class RubikSpek: Spek({
 
     describe("A Rubik Cube") {
 
-        val front = Face(
-            listOf(WHITE, BLUE, ORANGE),
-            listOf(RED, YELLOW, RED),
-            listOf(RED, RED, RED)
-        )
 
-        val bottom = Face(
-            listOf(BLUE, WHITE, GREEN),
-            listOf(ORANGE, ORANGE, WHITE),
-            listOf(BLUE, GREEN, GREEN)
-        )
-
-        val cube : Cube = Cube(front, bottom, front, front, front, front)
-
-        on("Moving Down Up Left") {
-
-            val newCube = moveDownUpLeft(cube)
-
-            val shouldFront = Face(
-                    listOf(BLUE, BLUE, ORANGE),
-                    listOf(ORANGE, YELLOW, RED),
-                    listOf(BLUE, RED, RED)
-            )
-
-            it("should change the pieces of the left side blocks of the cube") {
-                newCube.front `should equal` shouldFront
-            }
-        }
 
     }
 })
