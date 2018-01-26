@@ -2,9 +2,7 @@ package br.eti.cavalcante.rubik
 
 import br.eti.cavalcante.rubik.Color.*
 import br.eti.cavalcante.rubik.Position.*
-import org.amshove.kluent.`should equal to`
-import org.amshove.kluent.`should equal`
-import org.amshove.kluent.`should not be`
+import org.amshove.kluent.*
 import org.jetbrains.spek.api.Spek
 import org.jetbrains.spek.api.dsl.describe
 import org.jetbrains.spek.api.dsl.it
@@ -104,8 +102,25 @@ object FaceSpek : Spek({
                 listOf(GREEN, ORANGE)
             )
 
-            it("should be conidered as equals") {
-                face `should not be` different
+            it("should be considered different") {
+                face `should not equal` different
+            }
+        }
+
+        on("Solved a face") {
+            val solvedFace = Face(
+                    listOf(YELLOW, YELLOW),
+                    listOf(YELLOW, YELLOW)
+            )
+
+            it("should mark as solved") {
+                solvedFace.solved() `should be` true
+            }
+        }
+
+        on("Unsolving a face") {
+            it("should mark as solved") {
+                face.solved() `should be` false
             }
         }
 

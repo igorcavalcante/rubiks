@@ -2,14 +2,46 @@ package br.eti.cavalcante.rubik
 
 import br.eti.cavalcante.rubik.Position.*
 
-enum class Color { WHITE, BLUE, RED, YELLOW, ORANGE, GREEN }
+enum class Color(val ansiColor: String) {
+    WHITE("\u001B[47m"),
+    BLUE("\u001B[44m"),
+    RED("\u001B[41m"),
+    YELLOW("\u001B[43m"),
+    ORANGE("\u001b[48;5;202m"),
+    GREEN("\u001B[42m");
+
+    override fun toString() = "${this.ansiColor}  \u001B[0m"
+}
 enum class Position { FRONT, BACK, LEFT, RIGHT, TOP, BOTTOM }
 
 typealias Block = Color
 typealias Line = List<Block>
 typealias Column = Pair<Block, Block>
 
-class Cube(val top: Face, val bottom: Face, val front: Face, val back: Face, val left: Face, val right: Face)
+class Cube(val top: Face, val bottom: Face, val front: Face, val back: Face, val left: Face, val right: Face) {
+
+    val moveDownUpLeft = {
+        val newFront = front.replaceLeft(bottom.getColumn(0))
+        val newTop = top.replaceLeft(front.getColumn(0))
+        val newBack = back.replaceRight(top.getInvertedColumn(0))
+        val newBottom = bottom.replaceLeft(back.getColumn(0))
+        val newLeft = left.rotateFrontLeft()
+
+        Cube(newTop, newBottom, newFront, newBack, newLeft, right)
+    }
+
+    val moveUpDownLeft = {
+        val newFront = front.replaceLeft(bottom.getColumn(0))
+        val newTop = top.replaceLeft(front.getColumn(0))
+        val newBack = back.replaceRight(top.getInvertedColumn(0))
+        val newBottom = bottom.replaceLeft(back.getColumn(0))
+        val newLeft = left.rotateFrontLeft()
+
+//        Cube(newTop, newBottom, newFront, newBack, newLeft, right)
+        this
+    }
+
+}
 
 class Face(val top: Line, val bottom: Line) {
 
@@ -41,28 +73,23 @@ class Face(val top: Line, val bottom: Line) {
 
     fun getColumn(n: Int) = Pair(top[n], bottom[n])
 
-    override fun toString(): String =
-        "\n[${top[0]}][${top[1]}]" +
-        "\n[${bottom[0]}][${bottom[1]}]\n"
+    fun getInvertedColumn(n: Int) = Pair(bottom[n], top[n])
+
+    override fun toString() =
+        "\n${top[0]}${top[1]}" +
+        "\n${bottom[0]}${bottom[1]}\n\u001B[0m"
 
     override fun equals(other: Any?) =
         if(other is Face) top == other.top && bottom == other.bottom
         else false
 
+    fun solved(): Boolean {
+        val block = top.first()
+        return (top.all { it == block } && bottom.all { it == block })
+    }
 }
 
-//fun moveDownUpLeft (cube: Cube) : Cube {
-/*    val front = cube.front
-    val bottom = cube.bottom
 
-    val newTop = cube.top
-    val newBottom = cube.bottom
-    val newFront = front.moveDownUpLeft(bottom.getColumn(0))
-    val newBack = cube.back
-    val newLeft = cube.left
-    val newRight = cube.right
-    return Cube(newTop, newBottom, newFront, newBack, newLeft, newRight)*/
-//}
 /*val moveUpDownRight()
 val moveUpDownLeft()
 val moveDownUpRight()
